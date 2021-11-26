@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -139,7 +140,13 @@ public class PickImageFragment extends Fragment {
             }
             startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, ScanConstants.MY_CAMERA_REQUEST_CODE);
+            ArrayList<String> permissions = new ArrayList<String>();
+            permissions.add(Manifest.permission.CAMERA);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+            ActivityCompat.requestPermissions(getActivity(), permissions.toArray(new String[0]), ScanConstants.MY_CAMERA_REQUEST_CODE);
         }
     }
 
