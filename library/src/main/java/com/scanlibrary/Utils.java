@@ -15,17 +15,12 @@ import java.util.Date;
  * Created by jhansi on 05/04/15.
  */
 public class Utils {
-    static Date currentTime;
-    private Utils() {
-
-    }
+    private Utils() { }
 
     public static Uri getUri(Context context, Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        Log.wtf("PATH", "before insertImage");
-        // String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title" + " - " + (currentTime = Calendar.getInstance().getTime()), null);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, String.valueOf(Calendar.getInstance().getTimeInMillis()), null);
         Log.wtf("PATH", path);
         return Uri.parse(path);
     }

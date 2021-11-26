@@ -32,7 +32,7 @@ import java.util.Date;
 /**
  * Created by jhansi on 04/04/15.
  */
-public class PickImageFragment extends Fragment {
+public class PickImageFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
     int camorgal = 0;
     private String imagePath = "";
     private View view;
@@ -63,7 +63,7 @@ public class PickImageFragment extends Fragment {
         cameraButton.setOnClickListener(new CameraButtonClickListener());
         galleryButton = (ImageButton) view.findViewById(R.id.selectButton);
         galleryButton.setOnClickListener(new GalleryClickListener());
-        imagePath = getActivity().getApplicationContext().getFilesDir().getPath() + "/scanSample";
+        imagePath = getActivity().getApplicationContext().getCacheDir().getPath() + "/scanSample";
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
         } else {
@@ -246,6 +246,10 @@ public class PickImageFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        System.out.println("AAAAA requestCode MY_CAMERA_REQUEST_CODE");
+        System.out.println(requestCode);
+        System.out.println(MY_CAMERA_REQUEST_CODE);
+        System.out.println(grantResults[0]);
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
