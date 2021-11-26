@@ -63,7 +63,7 @@ public class PickImageFragment extends Fragment {
         cameraButton.setOnClickListener(new CameraButtonClickListener());
         galleryButton = (ImageButton) view.findViewById(R.id.selectButton);
         galleryButton.setOnClickListener(new GalleryClickListener());
-        imagePath = getActivity().getApplicationContext().getCacheDir().getPath() + "/scanSample";
+        imagePath = getActivity().getApplicationContext().getFilesDir().getPath() + "/scanSample";
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
         } else {
