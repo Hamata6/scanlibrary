@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -22,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +30,7 @@ import java.util.Date;
 /**
  * Created by jhansi on 04/04/15.
  */
-public class PickImageFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class PickImageFragment extends Fragment {
     int camorgal = 0;
     private String imagePath = "";
     private View view;
@@ -40,7 +38,6 @@ public class PickImageFragment extends Fragment implements ActivityCompat.OnRequ
     private ImageButton galleryButton;
     private Uri fileUri;
     private IScanner scanner;
-    private static final int MY_CAMERA_REQUEST_CODE = 100;
 
     @Override
     public void onAttach(Activity activity) {
@@ -142,7 +139,7 @@ public class PickImageFragment extends Fragment implements ActivityCompat.OnRequ
             }
             startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, ScanConstants.MY_CAMERA_REQUEST_CODE);
         }
     }
 
@@ -241,21 +238,5 @@ public class PickImageFragment extends Fragment implements ActivityCompat.OnRequ
                 = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);
         return original;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        System.out.println("AAAAA requestCode MY_CAMERA_REQUEST_CODE");
-        System.out.println(requestCode);
-        System.out.println(MY_CAMERA_REQUEST_CODE);
-        System.out.println(grantResults[0]);
-        if (requestCode == MY_CAMERA_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 }

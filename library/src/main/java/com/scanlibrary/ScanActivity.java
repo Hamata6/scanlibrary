@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ComponentCallbacks2;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 
 /**
  * Created by jhansi on 28/03/15.
  */
 public class ScanActivity extends Activity implements IScanner, ComponentCallbacks2 {
+    private PickImageFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +25,7 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
     }
 
     private void init() {
-        PickImageFragment fragment = new PickImageFragment();
+        fragment = new PickImageFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ScanConstants.OPEN_INTENT_PREFERENCE, getPreferenceContent());
         bundle.putInt("quality", getIntent().getIntExtra("quality", 1));
@@ -35,6 +38,22 @@ public class ScanActivity extends Activity implements IScanner, ComponentCallbac
 
     protected int getPreferenceContent() {
         return getIntent().getIntExtra(ScanConstants.OPEN_INTENT_PREFERENCE, 0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        System.out.println("AAAAA requestCode MY_CAMERA_REQUEST_CODE");
+        System.out.println(requestCode);
+        System.out.println(ScanConstants.MY_CAMERA_REQUEST_CODE);
+        System.out.println(grantResults[0]);
+        if (requestCode == ScanConstants.MY_CAMERA_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                fragment.openCamera();
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
