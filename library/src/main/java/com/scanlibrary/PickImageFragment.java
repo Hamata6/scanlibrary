@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -63,7 +63,7 @@ public class PickImageFragment extends Fragment {
         cameraButton.setOnClickListener(new CameraButtonClickListener());
         galleryButton = (ImageButton) view.findViewById(R.id.selectButton);
         galleryButton.setOnClickListener(new GalleryClickListener());
-        imagePath = getActivity().getApplicationContext().getExternalCacheDir().getPath() + "/scanSample";
+        imagePath = getActivity().getApplicationContext().getCacheDir().getPath() + "/scanSample";
         if (isIntentPreferenceSet()) {
             handleIntentPreference();
         } else {
@@ -126,7 +126,7 @@ public class PickImageFragment extends Fragment {
     public void openCamera() {
         camorgal = 0;
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             File file = createImageFile();
             boolean isDirectoryCreated = file.getParentFile().mkdirs();
             Log.d("", "openCamera: isDirectoryCreated: " + isDirectoryCreated);
@@ -142,14 +142,17 @@ public class PickImageFragment extends Fragment {
             }
             startActivityForResult(cameraIntent, ScanConstants.START_CAMERA_REQUEST_CODE);
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+            }
         }
     }
 
     private File createImageFile() {
         clearTempImages();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new
-                Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File file = new File(imagePath, "IMG_" + timeStamp +
                 ".jpg");
         fileUri = Uri.fromFile(file);
@@ -248,12 +251,11 @@ public class PickImageFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
                 Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
             }
-
         }
     }
 }
