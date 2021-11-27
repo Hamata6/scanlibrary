@@ -142,7 +142,7 @@ public class PickImageFragment extends Fragment {
         } else {
             ArrayList<String> permissions = new ArrayList<String>();
             permissions.add(Manifest.permission.CAMERA);
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                 permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
